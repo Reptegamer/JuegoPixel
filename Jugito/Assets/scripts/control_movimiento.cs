@@ -39,7 +39,7 @@ public class control_movimiento : MonoBehaviour {
         {
             animator.SetBool("isRunning", false );
         }
-        rb.velocity = new Vector2(inputMovimiento * velocidad, rb.velocity.y);
+        rb.linearVelocity = new Vector2(inputMovimiento * velocidad, rb.linearVelocity.y);
         GestionarOrientacion(inputMovimiento);
     }
     bool EstaEnSuelo()
@@ -56,7 +56,7 @@ public class control_movimiento : MonoBehaviour {
     void Salto()
     {
         // Reinicia saltos SOLO si está en suelo y la velocidad vertical es casi cero
-        if (EstaEnSuelo() && Mathf.Abs(rb.velocity.y) < 0.01f)
+        if (EstaEnSuelo() && Mathf.Abs(rb.linearVelocity.y) < 0.01f)
         {
             saltosRestantes = saltosMaximos;
         }
@@ -64,8 +64,13 @@ public class control_movimiento : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.Space) && saltosRestantes > 0)
         {
             saltosRestantes--;
-            rb.velocity = new Vector2(rb.velocity.x, 0f); // reset vertical
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f); // reset vertical
             rb.AddForce(Vector2.up * fuerzaSalto, ForceMode2D.Impulse);
+            if (animator != null)
+            {
+                animator.SetTrigger("jumptrigger");
+            }
+
         }
     }
     void GestionarOrientacion(float inputMovimiento)
